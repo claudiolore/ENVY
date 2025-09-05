@@ -5,6 +5,23 @@
 
 const { Template, TemplateVariable } = require("../models");
 
+/**
+ * Genera il contenuto del template dalle variabili
+ * @param {Array} variables - Array di variabili del template
+ * @returns {string} - Contenuto del template generato
+ */
+function generateTemplateContent(variables) {
+  return variables
+    .map((variable) => {
+      if (variable.isCommon && variable.commonValue) {
+        return `${variable.key}=${variable.commonValue}`;
+      } else {
+        return `${variable.key}={{${variable.key}}}`;
+      }
+    })
+    .join("\n");
+}
+
 const templateController = {
   /**
    * Lista tutti i template con le relative variabili
@@ -76,8 +93,14 @@ const templateController = {
         }
       }
 
+      // Genera il contenuto del template dalle variabili
+      const content = generateTemplateContent(variables);
+
       // Crea il template
-      const template = await Template.create({ name }, { transaction });
+      const template = await Template.create(
+        { name, content },
+        { transaction }
+      );
 
       // Crea le variabili del template
       const templateVariables = await TemplateVariable.bulkCreate(
@@ -174,8 +197,11 @@ const templateController = {
         }
       }
 
+      // Genera il contenuto del template dalle variabili aggiornate
+      const content = generateTemplateContent(variables);
+
       // Aggiorna il template
-      await template.update({ name }, { transaction });
+      await template.update({ name, content }, { transaction });
 
       // Elimina tutte le variabili esistenti del template
       await TemplateVariable.destroy({

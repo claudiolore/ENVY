@@ -56,8 +56,8 @@ export const templateApi = {
  * Client API endpoints
  */
 export const clientApi = {
-  // Lista tutti i clienti
-  list: () => api.post("/client/list"),
+  // Lista tutti i clienti di un template
+  list: (data) => api.post("/client/list", data),
 
   // Crea un nuovo cliente
   create: (data) => api.post("/client/create", data),

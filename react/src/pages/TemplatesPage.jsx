@@ -143,6 +143,16 @@ const TemplatesPage = () => {
     const newVariables = [...variables];
     newVariables[index] = { ...newVariables[index], [field]: value };
 
+    // Logica mutualmente esclusiva tra comune e obbligatoria
+    if (field === "isCommon" && value) {
+      // Se diventa comune, non può essere obbligatoria
+      newVariables[index].isRequired = false;
+    } else if (field === "isRequired" && value) {
+      // Se diventa obbligatoria, non può essere comune
+      newVariables[index].isCommon = false;
+      newVariables[index].commonValue = "";
+    }
+
     // Se diventa non comune, svuota il valore comune
     if (field === "isCommon" && !value) {
       newVariables[index].commonValue = "";
@@ -560,6 +570,7 @@ const TemplatesPage = () => {
                         control={
                           <Checkbox
                             checked={variable.isCommon}
+                            disabled={variable.isRequired}
                             onChange={(e) =>
                               updateVariable(
                                 index,
@@ -581,6 +592,7 @@ const TemplatesPage = () => {
                         control={
                           <Checkbox
                             checked={variable.isRequired}
+                            disabled={variable.isCommon}
                             onChange={(e) =>
                               updateVariable(
                                 index,
@@ -609,8 +621,13 @@ const TemplatesPage = () => {
                         disabled={variables.length === 1}
                         color="error"
                         size="small"
+                        sx={{
+                          "&:hover": {
+                            backgroundColor: "error.50",
+                          },
+                        }}
                       >
-                        <RemoveIcon />
+                        <DeleteIcon />
                       </IconButton>
                     </Grid>
                   </Grid>

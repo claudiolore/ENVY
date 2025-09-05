@@ -54,6 +54,7 @@ const TemplateVariable = sequelize.define(
       {
         unique: true,
         fields: ["templateId", "key"],
+        name: "template_variable_unique_key",
       },
     ],
   }

@@ -33,14 +33,14 @@ import {
   Cancel as CancelIcon,
 } from "@mui/icons-material";
 
-import { templateApi, clientApi } from "../services/api.js";
+import api, { templateApi, clientApi } from "../services/api.js";
 import { useNotification } from "../context/NotificationContext.jsx";
 
 // Importa le nuove API per client variables
 const clientVariableApi = {
-  list: (data) => clientApi.post("client-variable/list", data),
-  upsert: (data) => clientApi.post("client-variable/upsert", data),
-  delete: (data) => clientApi.post("client-variable/delete", data),
+  list: (data) => api.post("/client-variable/list", data),
+  upsert: (data) => api.post("/client-variable/upsert", data),
+  delete: (data) => api.post("/client-variable/delete", data),
 };
 
 const VariablesPage = () => {

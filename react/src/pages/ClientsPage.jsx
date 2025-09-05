@@ -321,7 +321,6 @@ const ClientsPage = () => {
                   </TableRow>
                 ))
               )}
-              )}
             </TableBody>
           </Table>
         </TableContainer>
