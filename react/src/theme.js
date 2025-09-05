@@ -42,17 +42,17 @@ const theme = createTheme({
     divider: "#e0e0e0",
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"Arvo", "Georgia", "Times New Roman", serif',
     h4: {
-      fontWeight: 600,
+      fontWeight: 700,
       color: "#000000",
     },
     h5: {
-      fontWeight: 500,
+      fontWeight: 700,
       color: "#000000",
     },
     h6: {
-      fontWeight: 500,
+      fontWeight: 700,
       color: "#000000",
     },
   },
