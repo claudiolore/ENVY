@@ -1,0 +1,139 @@
+/**
+ * Layout principale dell'applicazione
+ * Include navbar di navigazione e area contenuto
+ */
+
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  Container,
+  Tabs,
+  Tab,
+  Paper,
+} from "@mui/material";
+import {
+  Description as TemplateIcon,
+  People as ClientIcon,
+  Settings as VariableIcon,
+  Build as GenerateIcon,
+} from "@mui/icons-material";
+
+const Layout = ({ children }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Mapping delle routes per i tabs
+  const routes = [
+    { path: "/generate", label: "Genera", icon: <GenerateIcon /> },
+    { path: "/templates", label: "Template", icon: <TemplateIcon /> },
+    { path: "/clients", label: "Clienti", icon: <ClientIcon /> },
+    { path: "/variables", label: "Variabili", icon: <VariableIcon /> },
+  ];
+
+  // Trova il tab attivo basato sulla route corrente
+  const currentTab = routes.findIndex(
+    (route) =>
+      location.pathname === route.path ||
+      (location.pathname === "/" && route.path === "/generate")
+  );
+
+  const handleTabChange = (event, newValue) => {
+    navigate(routes[newValue].path);
+  };
+
+  return (
+    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      {/* Header con titolo e navigazione */}
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{ backgroundColor: "primary.main" }}
+      >
+        <Toolbar>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, fontWeight: 600, color: 'white' }}
+          >
+            ENVY - Environment Manager
+          </Typography>
+        </Toolbar>
+
+        {/* Tabs di navigazione */}
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: "divider",
+            backgroundColor: "background.paper",
+          }}
+        >
+          <Container maxWidth="lg">
+            <Tabs
+              value={currentTab >= 0 ? currentTab : 0}
+              onChange={handleTabChange}
+              aria-label="navigation tabs"
+              textColor="primary"
+              indicatorColor="primary"
+            >
+              {routes.map((route, index) => (
+                <Tab
+                  key={route.path}
+                  icon={route.icon}
+                  label={route.label}
+                  iconPosition="start"
+                  sx={{
+                    minHeight: 64,
+                    textTransform: "none",
+                    fontSize: "0.95rem",
+                    fontWeight: 500,
+                  }}
+                />
+              ))}
+            </Tabs>
+          </Container>
+        </Box>
+      </AppBar>
+
+      {/* Area contenuto principale */}
+      <Box component="main" sx={{ flexGrow: 1, py: 3 }}>
+        <Container maxWidth="lg">
+          <Paper
+            elevation={1}
+            sx={{
+              minHeight: "calc(100vh - 200px)",
+              p: 3,
+              backgroundColor: "background.paper",
+              borderRadius: 2,
+            }}
+          >
+            {children}
+          </Paper>
+        </Container>
+      </Box>
+
+      {/* Footer */}
+      <Box
+        component="footer"
+        sx={{
+          py: 2,
+          px: 2,
+          backgroundColor: "grey.100",
+          borderTop: 1,
+          borderColor: "divider",
+        }}
+      >
+        <Container maxWidth="lg">
+          <Typography variant="body2" color="text.secondary" align="center">
+            ENVY Environment Manager - Tool interno per gestione template .env
+          </Typography>
+        </Container>
+      </Box>
+    </Box>
+  );
+};
+
+export default Layout;
