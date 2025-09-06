@@ -226,16 +226,26 @@ const AnalyzePage = () => {
 
             {/* Upload dei file */}
             <Box>
-              <Typography variant="body1" fontWeight={500} gutterBottom>
-                {t("templates.importMultiple.selectFiles")}
-              </Typography>
-              <input
-                type="file"
-                multiple
-                accept=".env"
-                onChange={handleFilesUpload}
-                style={{ marginBottom: 16 }}
-              />
+              <Box sx={{ mb: 2 }}>
+                <input
+                  id="file-input"
+                  type="file"
+                  multiple
+                  accept=".env"
+                  onChange={handleFilesUpload}
+                  style={{ display: "none" }}
+                />
+                <label htmlFor="file-input">
+                  <Button
+                    variant="outlined"
+                    component="span"
+                    startIcon={<ImportIcon />}
+                    sx={{ mb: 1 }}
+                  >
+                    {t("templates.importMultiple.selectFiles")}
+                  </Button>
+                </label>
+              </Box>
               <Typography variant="body2" color="text.secondary">
                 {t("templates.importMultiple.selectFilesDescription")}
               </Typography>

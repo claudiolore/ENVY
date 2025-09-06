@@ -38,6 +38,8 @@ const translations = {
     "table.clientName": "Nome Cliente",
     "table.template": "Template",
     "table.configuredVariables": "Variabili Configurate",
+    "table.clientsCount": "N° Clienti",
+    "table.variablesCount": "N° Variabili",
     "table.created": "Creato",
     "table.actions": "Azioni",
 
@@ -302,6 +304,8 @@ const translations = {
     "table.clientName": "Client Name",
     "table.template": "Template",
     "table.configuredVariables": "Configured Variables",
+    "table.clientsCount": "# Clients",
+    "table.variablesCount": "# Variables",
     "table.created": "Created",
     "table.actions": "Actions",
 

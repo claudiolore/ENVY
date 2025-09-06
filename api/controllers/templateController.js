@@ -160,13 +160,40 @@ const templateController = {
             as: "variables",
             attributes: ["id", "key", "isCommon", "isRequired", "commonValue"],
           },
+          {
+            model: Client,
+            as: "clients",
+            attributes: ["id"], // Includo almeno l'ID per permettere il conteggio corretto
+          },
         ],
         order: [["createdAt", "DESC"]],
       });
 
+      // Aggiungo le statistiche a ogni template
+      const templatesWithStats = templates.map((template) => {
+        const templateData = template.toJSON();
+
+        // Calcolo statistiche
+        const clientsCount = template.clients ? template.clients.length : 0;
+        const variablesCount = template.variables
+          ? template.variables.length
+          : 0;
+
+        // Rimuovo l'array clients dalla risposta per non appesantirla
+        delete templateData.clients;
+
+        return {
+          ...templateData,
+          stats: {
+            clientsCount,
+            variablesCount,
+          },
+        };
+      });
+
       res.json({
         success: true,
-        data: templates,
+        data: templatesWithStats,
       });
     } catch (error) {
       console.error("Errore nel recupero dei template:", error);

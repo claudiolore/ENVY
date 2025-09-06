@@ -359,7 +359,8 @@ const TemplatesPage = () => {
           <TableHead>
             <TableRow>
               <TableCell>{t("templates.templateName")}</TableCell>
-              <TableCell>{t("templates.envContent")} (anteprima)</TableCell>
+              <TableCell align="center">{t("table.clientsCount")}</TableCell>
+              <TableCell align="center">{t("table.variablesCount")}</TableCell>
               <TableCell>{t("table.created")}</TableCell>
               <TableCell align="center">{t("table.actions")}</TableCell>
             </TableRow>
@@ -367,7 +368,7 @@ const TemplatesPage = () => {
           <TableBody>
             {templates.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
+                <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
                   <Typography variant="body1" color="text.secondary">
                     {t("templates.noTemplatesFound")}
                   </Typography>
@@ -381,24 +382,15 @@ const TemplatesPage = () => {
                       {template.name}
                     </Typography>
                   </TableCell>
-                  <TableCell>
-                    <Box sx={{ maxWidth: 400 }}>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontFamily: "monospace",
-                          fontSize: "0.8rem",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          backgroundColor: "grey.50",
-                          p: 1,
-                          borderRadius: 1,
-                        }}
-                      >
-                        {template.content}
-                      </Typography>
-                    </Box>
+                  <TableCell align="center">
+                    <Typography variant="body2">
+                      {template.stats?.clientsCount || 0}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Typography variant="body2">
+                      {template.stats?.variablesCount || 0}
+                    </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="text.secondary">
