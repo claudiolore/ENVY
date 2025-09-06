@@ -253,8 +253,8 @@ const envController = {
             envContent = `# ATTENZIONE: Alcune variabili obbligatorie non sono configurate per questo cliente\n# Configurare i valori mancanti prima dell'uso\n\n${envContent}`;
           }
 
-          // Aggiunge il file all'archivio con nome .env.{nomeCliente}
-          const fileName = `.env.${client.name.replace(/[^a-zA-Z0-9]/g, "_")}`;
+          // Aggiunge il file all'archivio con nome {nomeCliente}.env
+          const fileName = `${client.name.replace(/[^a-zA-Z0-9]/g, "_")}.env`;
           archive.append(envContent, { name: fileName });
         } catch (clientError) {
           console.error(

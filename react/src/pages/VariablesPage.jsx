@@ -35,6 +35,7 @@ import {
 
 import api, { templateApi, clientApi } from "../services/api.js";
 import { useNotification } from "../context/NotificationContext.jsx";
+import Swal from "sweetalert2";
 
 // Importa le nuove API per client variables
 const clientVariableApi = {
@@ -176,11 +177,22 @@ const VariablesPage = () => {
   };
 
   const deleteVariable = async (variable) => {
-    if (
-      !window.confirm(
-        `Sei sicuro di voler eliminare il valore della variabile "${variable.key}"?`
-      )
-    ) {
+    const result = await Swal.fire({
+      title: "Elimina Valore Variabile",
+      html: `Sei sicuro di voler eliminare il valore della variabile <strong>"${variable.key}"</strong>?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d32f2f",
+      cancelButtonColor: "#757575",
+      confirmButtonText: "Sì, elimina",
+      cancelButtonText: "Annulla",
+      customClass: {
+        confirmButton: "swal2-button-confirm",
+        cancelButton: "swal2-button-cancel",
+      },
+    });
+
+    if (!result.isConfirmed) {
       return;
     }
 

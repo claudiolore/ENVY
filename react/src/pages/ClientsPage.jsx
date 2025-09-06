@@ -37,6 +37,7 @@ import {
 
 import { clientApi, templateApi } from "../services/api.js";
 import { useNotification } from "../context/NotificationContext.jsx";
+import Swal from "sweetalert2";
 
 const ClientsPage = () => {
   const [clients, setClients] = useState([]);
@@ -154,12 +155,22 @@ const ClientsPage = () => {
   };
 
   const handleDelete = async (client) => {
-    if (
-      !window.confirm(
-        `Sei sicuro di voler eliminare il cliente "${client.name}"?\n\n` +
-          "Verranno eliminate anche tutte le variabili associate a questo cliente."
-      )
-    ) {
+    const result = await Swal.fire({
+      title: "Elimina Cliente",
+      html: `Sei sicuro di voler eliminare il cliente <strong>"${client.name}"</strong>?<br/><br/>Verranno eliminate anche tutte le variabili associate a questo cliente.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d32f2f",
+      cancelButtonColor: "#757575",
+      confirmButtonText: "Sì, elimina",
+      cancelButtonText: "Annulla",
+      customClass: {
+        confirmButton: "swal2-button-confirm",
+        cancelButton: "swal2-button-cancel",
+      },
+    });
+
+    if (!result.isConfirmed) {
       return;
     }
 

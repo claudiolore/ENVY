@@ -38,6 +38,7 @@ import {
 
 import { templateApi } from "../services/api.js";
 import { useNotification } from "../context/NotificationContext.jsx";
+import Swal from "sweetalert2";
 
 const TemplatesPage = () => {
   const [templates, setTemplates] = useState([]);
@@ -109,20 +110,6 @@ const TemplatesPage = () => {
       { key: "", isCommon: false, isRequired: false, commonValue: "" },
     ]);
     setFormErrors({});
-  };
-
-  // Funzione per generare l'anteprima del template
-  const generateTemplatePreview = () => {
-    return variables
-      .filter((variable) => variable.key.trim())
-      .map((variable) => {
-        if (variable.isCommon) {
-          return `${variable.key}=${variable.commonValue || ""}`;
-        } else {
-          return `${variable.key}={{${variable.key}}}`;
-        }
-      })
-      .join("\n");
   };
 
   // Gestione variabili
@@ -208,11 +195,12 @@ const TemplatesPage = () => {
       const equalIndex = trimmedLine.indexOf("=");
       if (equalIndex > 0) {
         const key = trimmedLine.substring(0, equalIndex).trim();
+        const value = trimmedLine.substring(equalIndex + 1).trim();
         variables.push({
           key,
-          isCommon: false,
+          isCommon: true, // Sempre comuni quando importate da .env
           isRequired: false,
-          commonValue: "",
+          commonValue: value, // Mantieni il valore originale dal file .env
         });
       }
     });
@@ -288,11 +276,22 @@ const TemplatesPage = () => {
   };
 
   const handleDelete = async (template) => {
-    if (
-      !window.confirm(
-        `Sei sicuro di voler eliminare il template "${template.name}"?`
-      )
-    ) {
+    const result = await Swal.fire({
+      title: "Elimina Template",
+      html: `Sei sicuro di voler eliminare il template <strong>"${template.name}"</strong>?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d32f2f",
+      cancelButtonColor: "#757575",
+      confirmButtonText: "Sì, elimina",
+      cancelButtonText: "Annulla",
+      customClass: {
+        confirmButton: "swal2-button-confirm",
+        cancelButton: "swal2-button-cancel",
+      },
+    });
+
+    if (!result.isConfirmed) {
       return;
     }
 
@@ -635,28 +634,6 @@ const TemplatesPage = () => {
               ))}
             </Box>
 
-            {/* Anteprima template generato */}
-            <Box>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                Anteprima template generato:
-              </Typography>
-              <Box
-                sx={{
-                  backgroundColor: "grey.50",
-                  p: 2,
-                  borderRadius: 1,
-                  fontFamily: "monospace",
-                  fontSize: "0.85rem",
-                  minHeight: "60px",
-                  border: 1,
-                  borderColor: "grey.300",
-                }}
-              >
-                {generateTemplatePreview() ||
-                  "Aggiungi variabili per vedere l'anteprima..."}
-              </Box>
-            </Box>
-
             {/* Info di aiuto */}
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -704,8 +681,8 @@ const TemplatesPage = () => {
           <Box sx={{ mt: 1 }}>
             <Typography variant="body2" color="text.secondary" paragraph>
               Incolla il contenuto di un file .env esistente. Sarà convertito
-              automaticamente in una lista di variabili con i rispettivi
-              placeholder {"{{NOME_VARIABILE}}"}.
+              automaticamente in una lista di variabili comuni che manterranno i
+              valori originali del file .env importato.
             </Typography>
 
             <TextField
@@ -747,9 +724,9 @@ MAIL_PORT=587`}
                 color="text.secondary"
                 sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}
               >
-                DB_HOST=localhost → DB_HOST={"{{DB_HOST}}"}
+                DB_HOST=localhost → DB_HOST=localhost (variabile comune)
                 <br />
-                API_KEY=secret123 → API_KEY={"{{API_KEY}}"}
+                API_KEY=secret123 → API_KEY=secret123 (variabile comune)
               </Typography>
             </Box>
           </Box>
