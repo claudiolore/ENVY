@@ -20,6 +20,7 @@ import {
   People as ClientIcon,
   Settings as VariableIcon,
   Build as GenerateIcon,
+  Analytics as AnalyzeIcon,
 } from "@mui/icons-material";
 
 import { useI18n } from "../context/I18nContext.jsx";
@@ -32,17 +33,18 @@ const Layout = ({ children }) => {
 
   // Mapping delle routes per i tabs
   const routes = [
-    { path: "/generate", label: t('nav.generate'), icon: <GenerateIcon /> },
-    { path: "/templates", label: t('nav.templates'), icon: <TemplateIcon /> },
-    { path: "/clients", label: t('nav.clients'), icon: <ClientIcon /> },
-    { path: "/variables", label: t('nav.variables'), icon: <VariableIcon /> },
+    { path: "/analyze", label: t("nav.analyze"), icon: <AnalyzeIcon /> },
+    { path: "/templates", label: t("nav.templates"), icon: <TemplateIcon /> },
+    { path: "/clients", label: t("nav.clients"), icon: <ClientIcon /> },
+    { path: "/variables", label: t("nav.variables"), icon: <VariableIcon /> },
+    { path: "/generate", label: t("nav.generate"), icon: <GenerateIcon /> },
   ];
 
   // Trova il tab attivo basato sulla route corrente
   const currentTab = routes.findIndex(
     (route) =>
       location.pathname === route.path ||
-      (location.pathname === "/" && route.path === "/generate")
+      (location.pathname === "/" && route.path === "/analyze")
   );
 
   const handleTabChange = (event, newValue) => {
@@ -61,9 +63,9 @@ const Layout = ({ children }) => {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, fontWeight: 600, color: 'white' }}
+            sx={{ flexGrow: 1, fontWeight: 600, color: "white" }}
           >
-            {t('app.title')}
+            {t("app.title")}
           </Typography>
           <LanguageSelector />
         </Toolbar>
@@ -133,7 +135,7 @@ const Layout = ({ children }) => {
       >
         <Container maxWidth="lg">
           <Typography variant="body2" color="text.secondary" align="center">
-            {t('app.title')} - {t('app.subtitle')}
+            {t("app.title")} - {t("app.subtitle")}
           </Typography>
         </Container>
       </Box>

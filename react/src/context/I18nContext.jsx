@@ -15,6 +15,7 @@ const translations = {
     "nav.templates": "Template",
     "nav.clients": "Clienti",
     "nav.variables": "Variabili",
+    "nav.analyze": "Analizza",
 
     // Pagina Clienti
     "clients.title": "Clienti",
@@ -176,6 +177,11 @@ const translations = {
     "templates.importMultiple.createError":
       "Errore nella creazione del template",
 
+    // Pagina Analyze
+    "analyze.title": "Analizza File .env",
+    "analyze.description":
+      "Carica più file .env esistenti per creare automaticamente template e clienti. L'analisi rileverà le variabili comuni, specifiche per client e parziali per aiutarti a strutturare il tuo template.",
+
     // Pagina Generate
     "generate.title": "Genera File .env",
     "generate.selectTemplate": "Seleziona Template",
@@ -262,6 +268,7 @@ const translations = {
     "common.delete": "Elimina",
     "common.save": "Salva",
     "common.cancel": "Annulla",
+    "common.reset": "Ripristina",
   },
 
   en: {
@@ -272,6 +279,7 @@ const translations = {
     "nav.templates": "Templates",
     "nav.clients": "Clients",
     "nav.variables": "Variables",
+    "nav.analyze": "Analyze",
 
     // Pagina Clienti
     "clients.title": "Clients",
@@ -430,6 +438,11 @@ const translations = {
       'Template "{{templateName}}" created successfully! {{clientsCount}} clients and {{variablesCount}} variables created.',
     "templates.importMultiple.createError": "Error creating template",
 
+    // Pagina Analyze
+    "analyze.title": "Analyze .env Files",
+    "analyze.description":
+      "Load multiple existing .env files to automatically create templates and clients. The analysis will detect common, client-specific, and partial variables to help you structure your template.",
+
     // Pagina Generate
     "generate.title": "Generate .env File",
     "generate.selectTemplate": "Select Template",
@@ -512,6 +525,7 @@ const translations = {
     "common.delete": "Delete",
     "common.save": "Save",
     "common.cancel": "Cancel",
+    "common.reset": "Reset",
   },
 };
 

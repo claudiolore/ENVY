@@ -12,17 +12,19 @@ import TemplatesPage from "./pages/TemplatesPage.jsx";
 import ClientsPage from "./pages/ClientsPage.jsx";
 import VariablesPage from "./pages/VariablesPage.jsx";
 import GeneratePage from "./pages/GeneratePage.jsx";
+import AnalyzePage from "./pages/AnalyzePage.jsx";
 
 function App() {
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "background.default" }}>
       <Layout>
         <Routes>
-          <Route path="/" element={<GeneratePage />} />
+          <Route path="/" element={<AnalyzePage />} />
           <Route path="/templates" element={<TemplatesPage />} />
           <Route path="/clients" element={<ClientsPage />} />
           <Route path="/variables" element={<VariablesPage />} />
           <Route path="/generate" element={<GeneratePage />} />
+          <Route path="/analyze" element={<AnalyzePage />} />
         </Routes>
       </Layout>
     </Box>
