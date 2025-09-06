@@ -124,6 +124,58 @@ const translations = {
     "templates.importAndConvert": "Importa e Converti",
     "templates.insertValue": "Inserisci valore...",
 
+    // Template Import Multiple
+    "templates.importMultiple.title": "Import Template da File .env",
+    "templates.importMultiple.step": "Step",
+    "templates.importMultiple.stepUpload": "Caricamento File",
+    "templates.importMultiple.stepPreview": "Anteprima & Conferma",
+    "templates.importMultiple.templateName": "Nome Template",
+    "templates.importMultiple.templateNamePlaceholder": "Template importato",
+    "templates.importMultiple.templateNameHelper":
+      "Il nome del template che verrà creato",
+    "templates.importMultiple.selectFiles": "Seleziona File .env",
+    "templates.importMultiple.selectFilesDescription":
+      "Seleziona più file .env. I nomi dei file diventeranno i nomi dei clienti.",
+    "templates.importMultiple.filesLoaded": "File Caricati",
+    "templates.importMultiple.analysisCompleted": "Analisi Completata",
+    "templates.importMultiple.commonVariables": "Variabili Comuni",
+    "templates.importMultiple.customVariables": "Variabili Custom",
+    "templates.importMultiple.partialVariables": "Variabili Parziali",
+    "templates.importMultiple.clients": "Client",
+    "templates.importMultiple.clientsToCreate": "CLIENT DA CREARE",
+    "templates.importMultiple.commonVariablesSection": "VARIABILI COMUNI",
+    "templates.importMultiple.commonVariablesDescription":
+      "stesso valore in tutti i file",
+    "templates.importMultiple.customVariablesSection": "VARIABILI CUSTOM",
+    "templates.importMultiple.customVariablesDescription":
+      "valori diversi per ogni client",
+    "templates.importMultiple.partialVariablesSection": "VARIABILI PARZIALI",
+    "templates.importMultiple.partialVariablesDescription":
+      "presenti solo in alcuni file",
+    "templates.importMultiple.partialVariablesHelper":
+      "Decidi se includere queste variabili nel template. Se incluse, verranno create vuote nei client mancanti.",
+    "templates.importMultiple.presentIn": "Presente in:",
+    "templates.importMultiple.missingIn": "Mancante in:",
+    "templates.importMultiple.valuesFound": "Valori trovati:",
+    "templates.importMultiple.include": "Includi",
+    "templates.importMultiple.analyzeFiles": "Analizza File",
+    "templates.importMultiple.createTemplate": "Crea Template",
+    "templates.importMultiple.selectAtLeastOneFile":
+      "Seleziona almeno un file .env",
+    "templates.importMultiple.filesLoadedSuccess":
+      "{{count}} file .env caricati con successo",
+    "templates.importMultiple.filesLoadedError": "Errore nel leggere i file",
+    "templates.importMultiple.enterTemplateName":
+      "Inserisci un nome per il template",
+    "templates.importMultiple.loadAtLeastOneFile": "Carica almeno un file .env",
+    "templates.importMultiple.analysisSuccess":
+      "Analisi completata con successo",
+    "templates.importMultiple.analysisError": "Errore nell'analisi dei file",
+    "templates.importMultiple.createSuccess":
+      'Template "{{templateName}}" creato con successo! {{clientsCount}} client e {{variablesCount}} variabili create.',
+    "templates.importMultiple.createError":
+      "Errore nella creazione del template",
+
     // Pagina Generate
     "generate.title": "Genera File .env",
     "generate.selectTemplate": "Seleziona Template",
@@ -326,6 +378,57 @@ const translations = {
       "DB_HOST=localhost → DB_HOST=localhost (common variable)\nAPI_KEY=secret123 → API_KEY=secret123 (common variable)",
     "templates.importAndConvert": "Import and Convert",
     "templates.insertValue": "Insert value...",
+
+    // Template Import Multiple
+    "templates.importMultiple.title": "Import Template from .env Files",
+    "templates.importMultiple.step": "Step",
+    "templates.importMultiple.stepUpload": "File Upload",
+    "templates.importMultiple.stepPreview": "Preview & Confirm",
+    "templates.importMultiple.templateName": "Template Name",
+    "templates.importMultiple.templateNamePlaceholder": "Imported template",
+    "templates.importMultiple.templateNameHelper":
+      "The name of the template that will be created",
+    "templates.importMultiple.selectFiles": "Select .env Files",
+    "templates.importMultiple.selectFilesDescription":
+      "Select multiple .env files. File names will become client names.",
+    "templates.importMultiple.filesLoaded": "Files Loaded",
+    "templates.importMultiple.analysisCompleted": "Analysis Completed",
+    "templates.importMultiple.commonVariables": "Common Variables",
+    "templates.importMultiple.customVariables": "Custom Variables",
+    "templates.importMultiple.partialVariables": "Partial Variables",
+    "templates.importMultiple.clients": "Clients",
+    "templates.importMultiple.clientsToCreate": "CLIENTS TO CREATE",
+    "templates.importMultiple.commonVariablesSection": "COMMON VARIABLES",
+    "templates.importMultiple.commonVariablesDescription":
+      "same value in all files",
+    "templates.importMultiple.customVariablesSection": "CUSTOM VARIABLES",
+    "templates.importMultiple.customVariablesDescription":
+      "different values for each client",
+    "templates.importMultiple.partialVariablesSection": "PARTIAL VARIABLES",
+    "templates.importMultiple.partialVariablesDescription":
+      "present only in some files",
+    "templates.importMultiple.partialVariablesHelper":
+      "Decide whether to include these variables in the template. If included, they will be created empty in missing clients.",
+    "templates.importMultiple.presentIn": "Present in:",
+    "templates.importMultiple.missingIn": "Missing in:",
+    "templates.importMultiple.valuesFound": "Values found:",
+    "templates.importMultiple.include": "Include",
+    "templates.importMultiple.analyzeFiles": "Analyze Files",
+    "templates.importMultiple.createTemplate": "Create Template",
+    "templates.importMultiple.selectAtLeastOneFile":
+      "Select at least one .env file",
+    "templates.importMultiple.filesLoadedSuccess":
+      "{{count}} .env files loaded successfully",
+    "templates.importMultiple.filesLoadedError": "Error reading files",
+    "templates.importMultiple.enterTemplateName": "Enter a template name",
+    "templates.importMultiple.loadAtLeastOneFile":
+      "Load at least one .env file",
+    "templates.importMultiple.analysisSuccess":
+      "Analysis completed successfully",
+    "templates.importMultiple.analysisError": "Error analyzing files",
+    "templates.importMultiple.createSuccess":
+      'Template "{{templateName}}" created successfully! {{clientsCount}} clients and {{variablesCount}} variables created.',
+    "templates.importMultiple.createError": "Error creating template",
 
     // Pagina Generate
     "generate.title": "Generate .env File",

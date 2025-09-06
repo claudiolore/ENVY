@@ -50,6 +50,12 @@ export const templateApi = {
 
   // Elimina un template
   delete: (data) => api.post("/template/delete", data),
+
+  // Analizza file .env multipli per l'importazione
+  analyzeImport: (data) => api.post("/template/analyze-import", data),
+
+  // Conferma l'importazione e crea template + clients + variables
+  confirmImport: (data) => api.post("/template/confirm-import", data),
 };
 
 /**

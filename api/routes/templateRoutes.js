@@ -20,4 +20,10 @@ router.post("/update", templateController.update);
 // POST /template/delete - Elimina un template
 router.post("/delete", templateController.delete);
 
+// POST /template/analyze-import - Analizza file .env multipli per l'importazione
+router.post("/analyze-import", templateController.analyzeImport);
+
+// POST /template/confirm-import - Conferma l'importazione e crea tutto
+router.post("/confirm-import", templateController.confirmImport);
+
 module.exports = router;
