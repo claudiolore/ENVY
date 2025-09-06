@@ -1,0 +1,70 @@
+# Docker Compose per Production - ottimizzato per produzione
+# Uso: docker-compose -f docker-compose.prod.yml up -d
+
+services:
+  # Backend ottimizzato per produzione
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: envy-backend-prod
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    volumes:
+      # Database isolato per produzione
+      - envy-db-prod:/app/data
+    networks:
+      - envy-prod-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Frontend ottimizzato per produzione
+  frontend:
+    build:
+      context: ./react
+      dockerfile: Dockerfile
+    container_name: envy-frontend-prod
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - envy-prod-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Reverse proxy per produzione (opzionale)
+  nginx:
+    image: nginx:alpine
+    container_name: envy-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      # Uncommenta per SSL
+      # - ./certs:/etc/nginx/certs
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - envy-prod-network
+
+networks:
+  envy-prod-network:
+    driver: bridge
+    name: envy-prod-network
+
+volumes:
+  envy-db-prod:
+    driver: local
+    name: envy-database-prod

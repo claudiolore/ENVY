@@ -1,0 +1,67 @@
+# Docker Compose configuration per ENVY
+# Orchestrazione di backend (Node.js) e frontend (React/Nginx)
+
+services:
+  # Backend API Server
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: envy-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    volumes:
+      # Persisti il database SQLite in un volume Docker dedicato
+      - envy-db:/app/data
+      # Il database verrà creato automaticamente nel container
+    networks:
+      - envy-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "const http = require('http'); const options = { hostname: 'localhost', port: 3001, path: '/health', method: 'POST', timeout: 2000 }; const req = http.request(options, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => { process.exit(1); }); req.on('timeout', () => { req.destroy(); process.exit(1); }); req.write('{}'); req.end();",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend React Application
+  frontend:
+    build:
+      context: ./react
+      dockerfile: Dockerfile
+    container_name: envy-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - envy-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# Network per comunicazione tra servizi
+networks:
+  envy-network:
+    driver: bridge
+    name: envy-network
+
+# Volumi per persistenza dati
+volumes:
+  envy-db:
+    driver: local
+    name: envy-database

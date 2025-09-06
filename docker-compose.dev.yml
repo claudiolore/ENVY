@@ -1,0 +1,41 @@
+# Docker Compose per Development - con hot reload
+# Uso: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  # Override del backend per development
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=development
+    volumes:
+      # Hot reload per il codice backend
+      - ./api:/app
+      - /app/node_modules
+      - envy-db-dev:/app/data
+      # Esclude il database host per evitare conflitti
+      - /app/database.sqlite
+    command: ["npm", "run", "dev"]
+
+  # Override del frontend per development
+  frontend:
+    build:
+      context: ./react
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3001
+    volumes:
+      # Hot reload per il codice frontend
+      - ./react:/app
+      - /app/node_modules
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+    ports:
+      - "3000:3000"
+
+# Volumi aggiuntivi per development
+volumes:
+  envy-db-dev:
+    driver: local
+    name: envy-database-dev
