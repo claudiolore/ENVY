@@ -38,6 +38,7 @@ import {
 
 import { templateApi } from "../services/api.js";
 import { useNotification } from "../context/NotificationContext.jsx";
+import { useI18n } from "../context/I18nContext.jsx";
 import Swal from "sweetalert2";
 
 const TemplatesPage = () => {
@@ -55,6 +56,7 @@ const TemplatesPage = () => {
   ]);
 
   const { showSuccess, showError } = useNotification();
+  const { t } = useI18n();
 
   // Carica la lista dei template all'avvio
   useEffect(() => {
@@ -67,7 +69,7 @@ const TemplatesPage = () => {
       const response = await templateApi.list();
       setTemplates(response.data.data || []);
     } catch (error) {
-      showError("Errore nel caricamento dei template");
+      showError(t("message.loadTemplatesError"));
       console.error("Error loading templates:", error);
     } finally {
       setLoading(false);
@@ -160,7 +162,7 @@ const TemplatesPage = () => {
 
   const handleImportEnv = () => {
     if (!importContent.trim()) {
-      showError("Inserisci il contenuto del file .env da importare");
+      showError(t("templates.insertEnvContent"));
       return;
     }
 
@@ -173,7 +175,7 @@ const TemplatesPage = () => {
     );
 
     handleCloseImportDialog();
-    showSuccess("File .env importato e convertito in template con successo!");
+    showSuccess(t("templates.envImported"));
   };
 
   // Funzione per parsare il contenuto .env e estrarre le variabili
@@ -212,11 +214,11 @@ const TemplatesPage = () => {
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.name.trim()) errors.name = "Nome è obbligatorio";
+    if (!formData.name.trim()) errors.name = t("validation.nameRequired");
 
     const validVariables = variables.filter((v) => v.key.trim());
     if (validVariables.length === 0) {
-      errors.variables = "Aggiungi almeno una variabile";
+      errors.variables = t("templates.addAtLeastOne");
     } else {
       // Controlla che le variabili comuni abbiano un valore
       const commonWithoutValue = validVariables.find(
@@ -254,21 +256,21 @@ const TemplatesPage = () => {
           name: formData.name.trim(),
           variables: templateVariables,
         });
-        showSuccess("Template aggiornato con successo");
+        showSuccess(t("templates.templateUpdated"));
       } else {
         // Create template
         await templateApi.create({
           name: formData.name.trim(),
           variables: templateVariables,
         });
-        showSuccess("Template creato con successo");
+        showSuccess(t("templates.templateCreated"));
       }
 
       handleCloseDialog();
       loadTemplates();
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error || "Errore durante il salvataggio";
+        error.response?.data?.error || t("message.saveError");
       showError(errorMessage);
     } finally {
       setSubmitting(false);
@@ -277,14 +279,14 @@ const TemplatesPage = () => {
 
   const handleDelete = async (template) => {
     const result = await Swal.fire({
-      title: "Elimina Template",
-      html: `Sei sicuro di voler eliminare il template <strong>"${template.name}"</strong>?`,
+      title: t("templates.deleteTemplate"),
+      html: t("templates.deleteConfirm", { templateName: template.name }),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d32f2f",
       cancelButtonColor: "#757575",
-      confirmButtonText: "Sì, elimina",
-      cancelButtonText: "Annulla",
+      confirmButtonText: t("dialog.yes"),
+      cancelButtonText: t("dialog.cancel"),
       customClass: {
         confirmButton: "swal2-button-confirm",
         cancelButton: "swal2-button-cancel",
@@ -297,11 +299,11 @@ const TemplatesPage = () => {
 
     try {
       await templateApi.delete({ id: template.id });
-      showSuccess("Template eliminato con successo");
+      showSuccess(t("templates.templateDeleted"));
       loadTemplates();
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error || "Errore durante l'eliminazione";
+        error.response?.data?.error || t("message.deleteError");
       showError(errorMessage);
     }
   };
@@ -340,14 +342,14 @@ const TemplatesPage = () => {
       >
         <Box display="flex" alignItems="center" gap={1}>
           <TemplateIcon color="primary" />
-          <Typography variant="h4">Template</Typography>
+          <Typography variant="h4">{t("templates.title")}</Typography>
         </Box>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
         >
-          Nuovo Template
+          {t("templates.newTemplate")}
         </Button>
       </Box>
 
@@ -356,10 +358,10 @@ const TemplatesPage = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Nome</TableCell>
-              <TableCell>Contenuto (anteprima)</TableCell>
-              <TableCell>Creato</TableCell>
-              <TableCell align="center">Azioni</TableCell>
+              <TableCell>{t("templates.templateName")}</TableCell>
+              <TableCell>{t("templates.envContent")} (anteprima)</TableCell>
+              <TableCell>{t("table.created")}</TableCell>
+              <TableCell align="center">{t("table.actions")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -367,7 +369,7 @@ const TemplatesPage = () => {
               <TableRow>
                 <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
                   <Typography variant="body1" color="text.secondary">
-                    Nessun template trovato. Crea il primo template!
+                    {t("templates.noTemplatesFound")}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -434,12 +436,14 @@ const TemplatesPage = () => {
         fullWidth
       >
         <DialogTitle>
-          {editingTemplate ? "Modifica Template" : "Nuovo Template"}
+          {editingTemplate
+            ? t("templates.editTemplate")
+            : t("templates.newTemplate")}
         </DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
             <TextField
-              label="Nome Template"
+              label={t("templates.templateName")}
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -458,7 +462,7 @@ const TemplatesPage = () => {
               mb={1}
             >
               <Typography variant="body1" fontWeight={500}>
-                Variabili Template
+                {t("templates.templateVariables")}
               </Typography>
               <Box display="flex" gap={1}>
                 <Button
@@ -467,7 +471,7 @@ const TemplatesPage = () => {
                   startIcon={<ImportIcon />}
                   onClick={handleOpenImportDialog}
                 >
-                  Importa da .env
+                  {t("templates.importFromEnv")}
                 </Button>
                 <Button
                   variant="contained"
@@ -475,7 +479,7 @@ const TemplatesPage = () => {
                   startIcon={<AddIcon />}
                   onClick={addVariable}
                 >
-                  Aggiungi
+                  {t("templates.add")}
                 </Button>
               </Box>
             </Box>
@@ -504,7 +508,7 @@ const TemplatesPage = () => {
                     {/* Nome Variabile */}
                     <Grid item xs={12} sm={3}>
                       <TextField
-                        label="Nome Variabile"
+                        label={t("templates.variableName")}
                         value={variable.key}
                         onChange={(e) =>
                           updateVariable(
@@ -524,12 +528,12 @@ const TemplatesPage = () => {
                     <Grid item xs={12} sm={3}>
                       {variable.isCommon ? (
                         <TextField
-                          label="Valore Comune"
+                          label={t("templates.commonValue")}
                           value={variable.commonValue}
                           onChange={(e) =>
                             updateVariable(index, "commonValue", e.target.value)
                           }
-                          placeholder="Inserisci valore..."
+                          placeholder={t("templates.insertValue")}
                           fullWidth
                           size="small"
                           sx={{ "& input": { fontFamily: "monospace" } }}
@@ -557,7 +561,7 @@ const TemplatesPage = () => {
                           >
                             {variable.key
                               ? `{{${variable.key}}}`
-                              : "Placeholder automatico"}
+                              : t("templates.placeholderAuto")}
                           </Typography>
                         </Box>
                       )}
@@ -580,7 +584,7 @@ const TemplatesPage = () => {
                             size="small"
                           />
                         }
-                        label="Comune"
+                        label={t("templates.isCommon")}
                         sx={{ margin: 0 }}
                       />
                     </Grid>
@@ -602,7 +606,7 @@ const TemplatesPage = () => {
                             size="small"
                           />
                         }
-                        label="Obbligatoria"
+                        label={t("templates.isRequired")}
                         sx={{ margin: 0 }}
                       />
                     </Grid>
@@ -637,34 +641,49 @@ const TemplatesPage = () => {
             {/* Info di aiuto */}
             <Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                💡 Come funziona:
+                {t("templates.helpTitle")}
               </Typography>
               <Typography
                 variant="body2"
                 color="text.secondary"
                 sx={{ fontSize: "0.8rem" }}
               >
-                • <strong>Variabili Comuni</strong>: Hanno lo stesso valore per
-                tutti i clienti (es: DB_PORT=3306)
-                <br />• <strong>Variabili Specifiche</strong>: Ogni cliente avrà
-                un valore diverso (es: DB_HOST)
-                <br />• <strong>Variabili Obbligatorie</strong>: Devono avere un
-                valore per generare il file .env
-                <br />• <strong>Import .env</strong>: Importa un file esistente
-                per creare il template velocemente
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: t("templates.helpCommon"),
+                  }}
+                />
+                <br />
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: t("templates.helpSpecific"),
+                  }}
+                />
+                <br />
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: t("templates.helpRequired"),
+                  }}
+                />
+                <br />
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: t("templates.helpImport"),
+                  }}
+                />
               </Typography>
             </Box>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Annulla</Button>
+          <Button onClick={handleCloseDialog}>{t("dialog.cancel")}</Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
             disabled={submitting}
             startIcon={submitting && <CircularProgress size={16} />}
           >
-            {editingTemplate ? "Salva" : "Crea"}
+            {editingTemplate ? t("dialog.save") : t("dialog.create")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -676,30 +695,21 @@ const TemplatesPage = () => {
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle>Importa File .env Esistente</DialogTitle>
+        <DialogTitle>{t("templates.importExisting")}</DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 1 }}>
             <Typography variant="body2" color="text.secondary" paragraph>
-              Incolla il contenuto di un file .env esistente. Sarà convertito
-              automaticamente in una lista di variabili comuni che manterranno i
-              valori originali del file .env importato.
+              {t("templates.importDescription")}
             </Typography>
 
             <TextField
-              label="Contenuto File .env"
+              label={t("templates.envFileContent")}
               value={importContent}
               onChange={(e) => setImportContent(e.target.value)}
               multiline
               rows={12}
               fullWidth
-              placeholder={`# Esempio di file .env da incollare:
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=myapp_production
-API_KEY=your_secret_key_here
-DEBUG=false
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587`}
+              placeholder={t("templates.envExample")}
               sx={{
                 fontFamily: "monospace",
                 "& textarea": { fontFamily: "monospace", fontSize: "0.9rem" },
@@ -717,29 +727,38 @@ MAIL_PORT=587`}
               }}
             >
               <Typography variant="body2" fontWeight={500} gutterBottom>
-                Conversione automatica:
+                {t("templates.autoConversion")}
               </Typography>
               <Typography
                 variant="body2"
                 color="text.secondary"
                 sx={{ fontFamily: "monospace", fontSize: "0.8rem" }}
               >
-                DB_HOST=localhost → DB_HOST=localhost (variabile comune)
-                <br />
-                API_KEY=secret123 → API_KEY=secret123 (variabile comune)
+                {t("templates.conversionExample")
+                  .split("\n")
+                  .map((line, index) => (
+                    <span key={index}>
+                      {line}
+                      {index <
+                        t("templates.conversionExample").split("\n").length -
+                          1 && <br />}
+                    </span>
+                  ))}
               </Typography>
             </Box>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseImportDialog}>Annulla</Button>
+          <Button onClick={handleCloseImportDialog}>
+            {t("dialog.cancel")}
+          </Button>
           <Button
             onClick={handleImportEnv}
             variant="contained"
             startIcon={<ImportIcon />}
             disabled={!importContent.trim()}
           >
-            Importa e Converti
+            {t("templates.importAndConvert")}
           </Button>
         </DialogActions>
       </Dialog>

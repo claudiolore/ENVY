@@ -22,16 +22,20 @@ import {
   Build as GenerateIcon,
 } from "@mui/icons-material";
 
+import { useI18n } from "../context/I18nContext.jsx";
+import LanguageSelector from "./LanguageSelector.jsx";
+
 const Layout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   // Mapping delle routes per i tabs
   const routes = [
-    { path: "/generate", label: "Genera", icon: <GenerateIcon /> },
-    { path: "/templates", label: "Template", icon: <TemplateIcon /> },
-    { path: "/clients", label: "Clienti", icon: <ClientIcon /> },
-    { path: "/variables", label: "Variabili", icon: <VariableIcon /> },
+    { path: "/generate", label: t('nav.generate'), icon: <GenerateIcon /> },
+    { path: "/templates", label: t('nav.templates'), icon: <TemplateIcon /> },
+    { path: "/clients", label: t('nav.clients'), icon: <ClientIcon /> },
+    { path: "/variables", label: t('nav.variables'), icon: <VariableIcon /> },
   ];
 
   // Trova il tab attivo basato sulla route corrente
@@ -59,8 +63,9 @@ const Layout = ({ children }) => {
             component="div"
             sx={{ flexGrow: 1, fontWeight: 600, color: 'white' }}
           >
-            ENVY - Environment Manager
+            {t('app.title')}
           </Typography>
+          <LanguageSelector />
         </Toolbar>
 
         {/* Tabs di navigazione */}
@@ -128,7 +133,7 @@ const Layout = ({ children }) => {
       >
         <Container maxWidth="lg">
           <Typography variant="body2" color="text.secondary" align="center">
-            ENVY Environment Manager - Tool interno per gestione template .env
+            {t('app.title')} - {t('app.subtitle')}
           </Typography>
         </Container>
       </Box>

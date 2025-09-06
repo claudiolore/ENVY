@@ -38,6 +38,7 @@ import {
   downloadBlob,
 } from "../services/api.js";
 import { useNotification } from "../context/NotificationContext.jsx";
+import { useI18n } from "../context/I18nContext.jsx";
 
 const GeneratePage = () => {
   const [clients, setClients] = useState([]);
@@ -52,6 +53,7 @@ const GeneratePage = () => {
   const [missingVariables, setMissingVariables] = useState([]);
 
   const { showSuccess, showError, showInfo } = useNotification();
+  const { t } = useI18n();
 
   // Carica i template all'avvio
   useEffect(() => {
@@ -85,7 +87,7 @@ const GeneratePage = () => {
       const response = await templateApi.list();
       setTemplates(response.data.data || []);
     } catch (error) {
-      showError("Errore nel caricamento dei template");
+      showError(t("message.loadTemplatesError"));
       console.error("Error loading templates:", error);
     } finally {
       setLoadingData(false);
@@ -100,7 +102,7 @@ const GeneratePage = () => {
       const response = await clientApi.list({ templateId: selectedTemplateId });
       setClients(response.data.data || []);
     } catch (error) {
-      showError("Errore nel caricamento dei clienti");
+      showError(t("message.loadClientsError"));
       console.error("Error loading clients:", error);
     } finally {
       setLoadingClients(false);
@@ -109,7 +111,7 @@ const GeneratePage = () => {
 
   const handleGenerate = async () => {
     if (!selectedClientId || !selectedTemplateId) {
-      showError("Seleziona sia un cliente che un template");
+      showError(t("validation.selectBoth"));
       return;
     }
 
@@ -123,10 +125,10 @@ const GeneratePage = () => {
       });
 
       setGeneratedEnv(response.data.data.envContent);
-      showSuccess("File .env generato con successo");
+      showSuccess(t("generate.generated"));
     } catch (error) {
       const errorData = error.response?.data;
-      const errorMessage = errorData?.error || "Errore durante la generazione";
+      const errorMessage = errorData?.error || t("generate.generateError");
 
       // Se ci sono variabili obbligatorie mancanti, salvale nello state
       if (errorData?.missingVariables) {
@@ -142,27 +144,27 @@ const GeneratePage = () => {
 
   const handleCopyToClipboard = async () => {
     if (!generatedEnv) {
-      showError("Nessun contenuto da copiare");
+      showError(t("generate.noContentToCopy"));
       return;
     }
 
     try {
       await copyToClipboard(generatedEnv);
-      showSuccess("Contenuto copiato negli appunti");
+      showSuccess(t("generate.copied"));
     } catch (error) {
-      showError("Errore durante la copia");
+      showError(t("generate.copyError"));
     }
   };
 
   const handleExportZip = async () => {
     if (!selectedTemplateId) {
-      showError("Seleziona un template per l'esportazione ZIP");
+      showError(t("generate.selectTemplateForZip"));
       return;
     }
 
     try {
       setZipLoading(true);
-      showInfo("Generazione ZIP in corso...");
+      showInfo(t("generate.generatingZip"));
 
       const response = await envApi.exportZip({
         templateId: selectedTemplateId,
@@ -174,10 +176,10 @@ const GeneratePage = () => {
       const filename = `env-files-${selectedTemplate?.name || "export"}.zip`;
 
       downloadBlob(response.data, filename);
-      showSuccess("File ZIP scaricato con successo");
+      showSuccess(t("generate.downloaded"));
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error || "Errore durante l'esportazione ZIP";
+        error.response?.data?.error || t("generate.zipError");
       showError(errorMessage);
     } finally {
       setZipLoading(false);
@@ -209,7 +211,7 @@ const GeneratePage = () => {
       {/* Header */}
       <Box display="flex" alignItems="center" gap={1} mb={3}>
         <GenerateIcon color="primary" />
-        <Typography variant="h4">Genera File .env</Typography>
+        <Typography variant="h4">{t("generate.title")}</Typography>
       </Box>
 
       <Grid container spacing={3}>
@@ -218,25 +220,25 @@ const GeneratePage = () => {
           <Card elevation={1}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Configurazione
+                {t("generate.configuration")}
               </Typography>
 
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {/* Selector template */}
                 <FormControl fullWidth>
-                  <InputLabel>Seleziona Template</InputLabel>
+                  <InputLabel>{t("generate.selectTemplate")}</InputLabel>
                   <Select
                     value={selectedTemplateId}
                     onChange={(e) => setSelectedTemplateId(e.target.value)}
-                    label="Seleziona Template"
+                    label={t("generate.selectTemplate")}
                   >
                     <MenuItem value="">
-                      <em>Seleziona un template...</em>
+                      <em>{t("clients.selectTemplatePlaceholder")}</em>
                     </MenuItem>
                     {templates.map((template) => (
                       <MenuItem key={template.id} value={template.id}>
                         {template.name} ({template.variables?.length || 0}{" "}
-                        variabili)
+                        {t("common.variables")})
                       </MenuItem>
                     ))}
                   </Select>
@@ -244,15 +246,15 @@ const GeneratePage = () => {
 
                 {/* Selector cliente */}
                 <FormControl fullWidth disabled={!selectedTemplateId}>
-                  <InputLabel>Seleziona Cliente</InputLabel>
+                  <InputLabel>{t("generate.selectClient")}</InputLabel>
                   <Select
                     value={selectedClientId}
                     onChange={(e) => setSelectedClientId(e.target.value)}
-                    label="Seleziona Cliente"
+                    label={t("generate.selectClient")}
                     disabled={loadingClients || !selectedTemplateId}
                   >
                     <MenuItem value="">
-                      <em>Seleziona un cliente...</em>
+                      <em>{t("clients.selectTemplatePlaceholder")}...</em>
                     </MenuItem>
                     {clients.map((client) => (
                       <MenuItem key={client.id} value={client.id}>
@@ -265,8 +267,10 @@ const GeneratePage = () => {
                 {/* Info selezione */}
                 {selectedClient && selectedTemplate && (
                   <Alert severity="info" sx={{ mt: 1 }}>
-                    Generazione per <strong>{selectedClient.name}</strong> con
-                    template <strong>{selectedTemplate.name}</strong>
+                    {t("generate.generationFor", {
+                      clientName: selectedClient.name,
+                      templateName: selectedTemplate.name,
+                    })}
                   </Alert>
                 )}
 
@@ -274,7 +278,7 @@ const GeneratePage = () => {
                 {missingVariables.length > 0 && (
                   <Alert severity="error" sx={{ mt: 1 }}>
                     <Typography variant="body2" fontWeight={500} gutterBottom>
-                      ⚠️ Variabili obbligatorie mancanti:
+                      {t("generate.missingVariables")}
                     </Typography>
                     <Box component="ul" sx={{ m: 0, pl: 2 }}>
                       {missingVariables.map((variable) => (
@@ -289,8 +293,9 @@ const GeneratePage = () => {
                       ))}
                     </Box>
                     <Typography variant="body2" sx={{ mt: 1 }}>
-                      Vai alla pagina <strong>Variabili</strong> per configurare
-                      i valori mancanti.
+                      {t("generate.goToVariables", {
+                        variables: t("nav.variables"),
+                      })}
                     </Typography>
                   </Alert>
                 )}
@@ -306,7 +311,7 @@ const GeneratePage = () => {
                 }
                 disabled={!selectedClientId || !selectedTemplateId || loading}
               >
-                Rigenera
+                {t("generate.regenerate")}
               </Button>
 
               <Button
@@ -315,7 +320,7 @@ const GeneratePage = () => {
                 startIcon={<CopyIcon />}
                 disabled={!generatedEnv}
               >
-                Copia
+                {t("generate.copy")}
               </Button>
             </CardActions>
           </Card>
@@ -326,7 +331,7 @@ const GeneratePage = () => {
           <Card elevation={1}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Anteprima File .env
+                {t("generate.preview")} File .env
               </Typography>
 
               <TextField
@@ -344,10 +349,10 @@ const GeneratePage = () => {
                 }}
                 placeholder={
                   !selectedClientId || !selectedTemplateId
-                    ? "Seleziona cliente e template per vedere l'anteprima..."
+                    ? t("generate.placeholderSelect")
                     : loading
-                    ? "Generazione in corso..."
-                    : "Nessun contenuto generato"
+                    ? t("generate.placeholderGenerating")
+                    : t("generate.placeholderEmpty")
                 }
                 variant="outlined"
               />
@@ -363,17 +368,16 @@ const GeneratePage = () => {
         <CardContent>
           <Box display="flex" alignItems="center" gap={1} mb={2}>
             <ZipIcon color="primary" />
-            <Typography variant="h6">Esportazione ZIP</Typography>
+            <Typography variant="h6">{t("generate.zipExport")}</Typography>
           </Box>
 
           <Typography variant="body1" color="text.secondary" paragraph>
-            Scarica un archivio ZIP contenente i file .env generati per tutti i
-            clienti utilizzando il template selezionato.
+            {t("generate.zipDescription")}
           </Typography>
 
           {!selectedTemplateId && (
             <Alert severity="warning" sx={{ mb: 2 }}>
-              Seleziona un template per abilitare l'esportazione ZIP
+              {t("generate.selectTemplateFirst")}
             </Alert>
           )}
 
@@ -388,13 +392,14 @@ const GeneratePage = () => {
               disabled={!selectedTemplateId || zipLoading}
             >
               {zipLoading
-                ? "Generazione ZIP..."
-                : "Scarica ZIP di tutti i clienti"}
+                ? t("generate.generatingZip")
+                : t("generate.downloadZip")}
             </Button>
 
             {selectedTemplate && (
               <Typography variant="body2" color="text.secondary">
-                Template: <strong>{selectedTemplate.name}</strong>
+                {t("generate.templateLabel")}{" "}
+                <strong>{selectedTemplate.name}</strong>
               </Typography>
             )}
           </Box>
@@ -411,7 +416,7 @@ const GeneratePage = () => {
               <Card elevation={1}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Template: {selectedTemplate.name}
+                    {t("generate.templateLabel")} {selectedTemplate.name}
                   </Typography>
                   <TextField
                     value={selectedTemplate.content}
@@ -436,7 +441,7 @@ const GeneratePage = () => {
               <Card elevation={1}>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
-                    Cliente: {selectedClient.name}
+                    {t("generate.clientLabel")} {selectedClient.name}
                   </Typography>
                   {selectedClient.variables &&
                   selectedClient.variables.length > 0 ? (
@@ -459,14 +464,16 @@ const GeneratePage = () => {
                             }}
                           >
                             <strong>{variable.key}</strong> ={" "}
-                            {variable.value || <em>vuoto</em>}
+                            {variable.value || (
+                              <em>{t("generate.emptyValue")}</em>
+                            )}
                           </Typography>
                         </Box>
                       ))}
                     </Box>
                   ) : (
                     <Alert severity="warning">
-                      Questo cliente non ha variabili configurate
+                      {t("generate.noVariablesConfigured")}
                     </Alert>
                   )}
                 </CardContent>

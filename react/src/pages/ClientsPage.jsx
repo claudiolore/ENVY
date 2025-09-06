@@ -37,6 +37,7 @@ import {
 
 import { clientApi, templateApi } from "../services/api.js";
 import { useNotification } from "../context/NotificationContext.jsx";
+import { useI18n } from "../context/I18nContext.jsx";
 import Swal from "sweetalert2";
 
 const ClientsPage = () => {
@@ -52,6 +53,7 @@ const ClientsPage = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const { showSuccess, showError } = useNotification();
+  const { t } = useI18n();
 
   // Carica la lista dei template all'avvio
   useEffect(() => {
@@ -73,7 +75,7 @@ const ClientsPage = () => {
       const response = await templateApi.list();
       setTemplates(response.data.data || []);
     } catch (error) {
-      showError("Errore nel caricamento dei template");
+      showError(t("message.loadTemplatesError"));
       console.error("Error loading templates:", error);
     } finally {
       setLoading(false);
@@ -88,7 +90,7 @@ const ClientsPage = () => {
       const response = await clientApi.list({ templateId: selectedTemplateId });
       setClients(response.data.data || []);
     } catch (error) {
-      showError("Errore nel caricamento dei clienti");
+      showError(t("message.loadClientsError"));
       console.error("Error loading clients:", error);
     } finally {
       setLoadingClients(false);
@@ -97,7 +99,7 @@ const ClientsPage = () => {
 
   const handleOpenDialog = (client = null) => {
     if (!client && !selectedTemplateId) {
-      showError("Seleziona prima un template per creare un cliente");
+      showError(t("validation.selectTemplate"));
       return;
     }
 
@@ -116,7 +118,7 @@ const ClientsPage = () => {
 
   const validateForm = () => {
     const errors = {};
-    if (!formData.name.trim()) errors.name = "Nome è obbligatorio";
+    if (!formData.name.trim()) errors.name = t("validation.nameRequired");
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -133,21 +135,21 @@ const ClientsPage = () => {
           id: editingClient.id,
           name: formData.name.trim(),
         });
-        showSuccess("Cliente aggiornato con successo");
+        showSuccess(t("message.clientUpdated"));
       } else {
         // Create client
         await clientApi.create({
           templateId: selectedTemplateId,
           name: formData.name.trim(),
         });
-        showSuccess("Cliente creato con successo");
+        showSuccess(t("message.clientCreated"));
       }
 
       handleCloseDialog();
       loadClients();
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error || "Errore durante il salvataggio";
+        error.response?.data?.error || t("message.saveError");
       showError(errorMessage);
     } finally {
       setSubmitting(false);
@@ -156,14 +158,14 @@ const ClientsPage = () => {
 
   const handleDelete = async (client) => {
     const result = await Swal.fire({
-      title: "Elimina Cliente",
-      html: `Sei sicuro di voler eliminare il cliente <strong>"${client.name}"</strong>?<br/><br/>Verranno eliminate anche tutte le variabili associate a questo cliente.`,
+      title: t("dialog.deleteClient"),
+      html: t("dialog.deleteClientConfirm", { clientName: client.name }),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d32f2f",
       cancelButtonColor: "#757575",
-      confirmButtonText: "Sì, elimina",
-      cancelButtonText: "Annulla",
+      confirmButtonText: t("dialog.yes"),
+      cancelButtonText: t("dialog.cancel"),
       customClass: {
         confirmButton: "swal2-button-confirm",
         cancelButton: "swal2-button-cancel",
@@ -176,11 +178,11 @@ const ClientsPage = () => {
 
     try {
       await clientApi.delete({ id: client.id });
-      showSuccess("Cliente eliminato con successo");
+      showSuccess(t("message.clientDeleted"));
       loadClients();
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error || "Errore durante l'eliminazione";
+        error.response?.data?.error || t("message.deleteError");
       showError(errorMessage);
     }
   };
@@ -219,39 +221,40 @@ const ClientsPage = () => {
       >
         <Box display="flex" alignItems="center" gap={1}>
           <ClientIcon color="primary" />
-          <Typography variant="h4">Clienti</Typography>
+          <Typography variant="h4">{t("clients.title")}</Typography>
         </Box>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
         >
-          Nuovo Cliente
+          {t("clients.newClient")}
         </Button>
       </Box>
 
       {/* Selettore Template */}
       <Box mb={3}>
         <FormControl fullWidth>
-          <InputLabel>Seleziona Template</InputLabel>
+          <InputLabel>{t("clients.selectTemplate")}</InputLabel>
           <Select
             value={selectedTemplateId}
             onChange={(e) => setSelectedTemplateId(e.target.value)}
-            label="Seleziona Template"
+            label={t("clients.selectTemplate")}
           >
             <MenuItem value="">
-              <em>Seleziona un template...</em>
+              <em>{t("clients.selectTemplatePlaceholder")}</em>
             </MenuItem>
             {templates.map((template) => (
               <MenuItem key={template.id} value={template.id}>
-                {template.name} ({template.variables?.length || 0} variabili)
+                {template.name} ({template.variables?.length || 0}{" "}
+                {t("common.variables")})
               </MenuItem>
             ))}
           </Select>
         </FormControl>
         {!selectedTemplateId && (
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            💡 Seleziona un template per visualizzare e gestire i suoi clienti
+            {t("clients.selectTemplateHint")}
           </Typography>
         )}
       </Box>
@@ -262,11 +265,11 @@ const ClientsPage = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Nome Cliente</TableCell>
-                <TableCell>Template</TableCell>
-                <TableCell>Variabili Configurate</TableCell>
-                <TableCell>Creato</TableCell>
-                <TableCell align="center">Azioni</TableCell>
+                <TableCell>{t("table.clientName")}</TableCell>
+                <TableCell>{t("table.template")}</TableCell>
+                <TableCell>{t("table.configuredVariables")}</TableCell>
+                <TableCell>{t("table.created")}</TableCell>
+                <TableCell align="center">{t("table.actions")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -280,8 +283,7 @@ const ClientsPage = () => {
                 <TableRow>
                   <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
                     <Typography variant="body1" color="text.secondary">
-                      Nessun cliente trovato per questo template. Crea il primo
-                      cliente!
+                      {t("clients.noClientFound")}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -295,12 +297,14 @@ const ClientsPage = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" color="text.secondary">
-                        {client.template?.name || "Template non trovato"}
+                        {client.template?.name || t("clients.templateNotFound")}
                       </Typography>
                     </TableCell>
                     <TableCell>
                       <Chip
-                        label={`${client.variables?.length || 0} variabili`}
+                        label={t("clients.variablesCount", {
+                          count: client.variables?.length || 0,
+                        })}
                         variant="outlined"
                         size="small"
                         color={
@@ -352,12 +356,10 @@ const ClientsPage = () => {
         >
           <ClientIcon sx={{ fontSize: 48, color: "grey.400", mb: 2 }} />
           <Typography variant="h6" color="text.secondary" gutterBottom>
-            Seleziona un Template
+            {t("clients.selectTemplateFirst")}
           </Typography>
           <Typography variant="body2" color="text.secondary" textAlign="center">
-            Prima di gestire i clienti, devi selezionare un template dal menu a
-            tendina sopra.
-            <br />I clienti appartengono sempre a un template specifico.
+            {t("clients.selectTemplateDescription")}
           </Typography>
         </Box>
       )}
@@ -370,7 +372,7 @@ const ClientsPage = () => {
         fullWidth
       >
         <DialogTitle>
-          {editingClient ? "Modifica Cliente" : "Nuovo Cliente"}
+          {editingClient ? t("dialog.editClient") : t("dialog.newClient")}
         </DialogTitle>
         <DialogContent>
           <Box sx={{ mt: 1 }}>
@@ -384,15 +386,16 @@ const ClientsPage = () => {
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  💡 Stai creando un cliente per il template:{" "}
-                  <strong>
-                    {templates.find((t) => t.id == selectedTemplateId)?.name}
-                  </strong>
+                  {t("clients.createClientForTemplate", {
+                    templateName: templates.find(
+                      (template) => template.id == selectedTemplateId
+                    )?.name,
+                  })}
                 </Typography>
               </Box>
             )}
             <TextField
-              label="Nome Cliente"
+              label={t("dialog.clientName")}
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -405,14 +408,14 @@ const ClientsPage = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Annulla</Button>
+          <Button onClick={handleCloseDialog}>{t("dialog.cancel")}</Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
             disabled={submitting}
             startIcon={submitting && <CircularProgress size={16} />}
           >
-            {editingClient ? "Salva" : "Crea"}
+            {editingClient ? t("dialog.save") : t("dialog.create")}
           </Button>
         </DialogActions>
       </Dialog>

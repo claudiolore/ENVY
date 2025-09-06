@@ -35,6 +35,7 @@ import {
 
 import api, { templateApi, clientApi } from "../services/api.js";
 import { useNotification } from "../context/NotificationContext.jsx";
+import { useI18n } from "../context/I18nContext.jsx";
 import Swal from "sweetalert2";
 
 // Importa le nuove API per client variables
@@ -58,6 +59,7 @@ const VariablesPage = () => {
   const [tempValue, setTempValue] = useState("");
 
   const { showSuccess, showError } = useNotification();
+  const { t } = useI18n();
 
   // Carica la lista dei template all'avvio
   useEffect(() => {
@@ -91,7 +93,7 @@ const VariablesPage = () => {
       const response = await templateApi.list();
       setTemplates(response.data.data || []);
     } catch (error) {
-      showError("Errore nel caricamento dei template");
+      showError(t("message.loadTemplatesError"));
       console.error("Error loading templates:", error);
     } finally {
       setLoading(false);
@@ -106,7 +108,7 @@ const VariablesPage = () => {
       const response = await clientApi.list({ templateId: selectedTemplateId });
       setClients(response.data.data || []);
     } catch (error) {
-      showError("Errore nel caricamento dei clienti");
+      showError(t("message.loadClientsError"));
       console.error("Error loading clients:", error);
     } finally {
       setLoadingClients(false);
@@ -131,7 +133,7 @@ const VariablesPage = () => {
       const commonVars = template?.variables?.filter((v) => v.isCommon) || [];
       setCommonVariables(commonVars);
     } catch (error) {
-      showError("Errore nel caricamento delle variabili");
+      showError(t("variables.loadVariablesError"));
       console.error("Error loading variables:", error);
     } finally {
       setLoadingVariables(false);
@@ -165,27 +167,27 @@ const VariablesPage = () => {
         value: tempValue,
       });
 
-      showSuccess("Variabile salvata con successo");
+      showSuccess(t("variables.variableUpdated"));
       setEditingId(null);
       setTempValue("");
       loadVariables();
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error || "Errore durante il salvataggio";
+        error.response?.data?.error || t("message.saveError");
       showError(errorMessage);
     }
   };
 
   const deleteVariable = async (variable) => {
     const result = await Swal.fire({
-      title: "Elimina Valore Variabile",
-      html: `Sei sicuro di voler eliminare il valore della variabile <strong>"${variable.key}"</strong>?`,
+      title: t("variables.deleteValue"),
+      html: t("variables.deleteValueConfirm", { variableName: variable.key }),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d32f2f",
       cancelButtonColor: "#757575",
       confirmButtonText: "Sì, elimina",
-      cancelButtonText: "Annulla",
+      cancelButtonText: t("dialog.cancel"),
       customClass: {
         confirmButton: "swal2-button-confirm",
         cancelButton: "swal2-button-cancel",
@@ -199,12 +201,12 @@ const VariablesPage = () => {
     try {
       if (variable.clientVariableId) {
         await clientVariableApi.delete({ id: variable.clientVariableId });
-        showSuccess("Valore variabile eliminato con successo");
+        showSuccess(t("variables.variableDeleted"));
         loadVariables();
       }
     } catch (error) {
       const errorMessage =
-        error.response?.data?.error || "Errore durante l'eliminazione";
+        error.response?.data?.error || t("message.deleteError");
       showError(errorMessage);
     }
   };
@@ -237,7 +239,7 @@ const VariablesPage = () => {
       >
         <Box display="flex" alignItems="center" gap={1}>
           <VariableIcon color="primary" />
-          <Typography variant="h4">Variabili</Typography>
+          <Typography variant="h4">{t("variables.title")}</Typography>
         </Box>
       </Box>
 
@@ -245,19 +247,20 @@ const VariablesPage = () => {
       <Box mb={3} display="flex" gap={2}>
         {/* Selettore Template */}
         <FormControl fullWidth>
-          <InputLabel>Seleziona Template</InputLabel>
+          <InputLabel>{t("variables.selectTemplate")}</InputLabel>
           <Select
             value={selectedTemplateId}
             onChange={handleTemplateChange}
-            label="Seleziona Template"
+            label={t("variables.selectTemplate")}
             disabled={loading}
           >
             <MenuItem value="">
-              <em>Seleziona un template...</em>
+              <em>{t("clients.selectTemplatePlaceholder")}</em>
             </MenuItem>
             {templates.map((template) => (
               <MenuItem key={template.id} value={template.id}>
-                {template.name} ({template.variables?.length || 0} variabili)
+                {template.name} ({template.variables?.length || 0}{" "}
+                {t("common.variables")})
               </MenuItem>
             ))}
           </Select>
@@ -265,15 +268,15 @@ const VariablesPage = () => {
 
         {/* Selettore Cliente */}
         <FormControl fullWidth disabled={!selectedTemplateId}>
-          <InputLabel>Seleziona Cliente</InputLabel>
+          <InputLabel>{t("variables.selectClient")}</InputLabel>
           <Select
             value={selectedClientId}
             onChange={handleClientChange}
-            label="Seleziona Cliente"
+            label={t("variables.selectClient")}
             disabled={loadingClients || !selectedTemplateId}
           >
             <MenuItem value="">
-              <em>Seleziona un cliente...</em>
+              <em>{t("clients.selectTemplatePlaceholder")}...</em>
             </MenuItem>
             {clients.map((client) => (
               <MenuItem key={client.id} value={client.id}>
@@ -287,12 +290,11 @@ const VariablesPage = () => {
       {/* Contenuto condizionale */}
       {!selectedTemplateId ? (
         <Alert severity="info" sx={{ mt: 2 }}>
-          Seleziona prima un template per iniziare.
+          {t("variables.selectTemplateFirst")}
         </Alert>
       ) : !selectedClientId ? (
         <Alert severity="info" sx={{ mt: 2 }}>
-          Seleziona un cliente per visualizzare e gestire le sue variabili
-          d'ambiente specifiche.
+          {t("variables.selectBothFirst")}
         </Alert>
       ) : (
         <>
@@ -300,14 +302,14 @@ const VariablesPage = () => {
           {commonVariables.length > 0 && (
             <Box mb={4}>
               <Typography variant="h6" gutterBottom>
-                📋 Variabili Comuni (stesso valore per tutti i clienti)
+                📋 {t("variables.commonVariables")}
               </Typography>
               <TableContainer component={Paper} elevation={1}>
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      <TableCell>Chiave</TableCell>
-                      <TableCell>Valore Comune</TableCell>
+                      <TableCell>{t("variables.variableName")}</TableCell>
+                      <TableCell>{t("templates.commonValue")}</TableCell>
                       <TableCell>Tipo</TableCell>
                     </TableRow>
                   </TableHead>
@@ -341,14 +343,14 @@ const VariablesPage = () => {
                         <TableCell>
                           <Box display="flex" gap={1}>
                             <Chip
-                              label="Comune"
+                              label={t("templates.isCommon")}
                               size="small"
                               color="primary"
                               variant="outlined"
                             />
                             {variable.isRequired && (
                               <Chip
-                                label="Obbligatoria"
+                                label={t("templates.isRequired")}
                                 size="small"
                                 color="warning"
                                 variant="outlined"
@@ -367,14 +369,13 @@ const VariablesPage = () => {
           {/* Header sezione variabili specifiche */}
           <Box mb={2}>
             <Typography variant="h6" gutterBottom>
-              ⚙️ Variabili Specifiche Cliente:{" "}
+              {t("variables.specificClient")}{" "}
               <strong>
                 {clients.find((c) => c.id == selectedClientId)?.name}
               </strong>
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Queste variabili possono avere valori diversi per ogni cliente.
-              Clicca sui valori per modificarli.
+              {t("variables.specificDescription")}
             </Typography>
           </Box>
 
@@ -393,10 +394,10 @@ const VariablesPage = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Chiave</TableCell>
-                    <TableCell>Valore</TableCell>
+                    <TableCell>{t("variables.variableName")}</TableCell>
+                    <TableCell>{t("variables.value")}</TableCell>
                     <TableCell>Tipo</TableCell>
-                    <TableCell align="center">Azioni</TableCell>
+                    <TableCell align="center">{t("table.actions")}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -404,8 +405,7 @@ const VariablesPage = () => {
                     <TableRow>
                       <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
                         <Typography variant="body1" color="text.secondary">
-                          Nessuna variabile specifica trovata per questo
-                          template.
+                          {t("variables.noSpecificVariables")}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -454,7 +454,7 @@ const VariablesPage = () => {
                             >
                               {variable.value || (
                                 <em style={{ color: "#999" }}>
-                                  Clicca per aggiungere valore
+                                  {t("variables.clickToAdd")}
                                 </em>
                               )}
                             </Box>
@@ -463,14 +463,14 @@ const VariablesPage = () => {
                         <TableCell>
                           <Box display="flex" gap={1}>
                             <Chip
-                              label="Specifica"
+                              label={t("variables.specific")}
                               size="small"
                               color="secondary"
                               variant="outlined"
                             />
                             {variable.isRequired && (
                               <Chip
-                                label="Obbligatoria"
+                                label={t("templates.isRequired")}
                                 size="small"
                                 color="warning"
                                 variant="outlined"
