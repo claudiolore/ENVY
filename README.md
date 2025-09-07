@@ -18,53 +18,64 @@ The system consists of a Node.js/Express backend with SQLite database and a mode
 
 ```mermaid
 graph TB
-    User[("👤 User")]
+    User[("👤 Utente")]
 
-    subgraph "Frontend (Port 3000)"
-        React["⚛️ React App<br/>Material-UI"]
-        Pages["📄 Pages<br/>Templates, Clients, Variables"]
-        Components["🧩 Components<br/>Layout, Language Selector"]
-        Services["🔧 API Services"]
+    %% --- FRONTEND ---
+    subgraph "🌐 Frontend (Porta 3000)"
+        direction TB
+        React["⚛️ React + Material-UI"]
+        Pages["📄 Pagine<br/>(Template, Clienti, Variabili)"]
+        Components["🧩 Componenti UI<br/>(Layout, Lingua, Navbar)"]
+        Services["🔧 Servizi API<br/>(Fetch/POST verso Backend)"]
     end
 
-    subgraph "Backend (Port 3001)"
+    %% --- BACKEND ---
+    subgraph "🖥️ Backend (Porta 3001)"
+        direction TB
         Express["🚀 Express Server"]
-        Controllers["🎮 Controllers<br/>Template, Client, Env"]
-        Models["📊 Sequelize Models"]
-        Routes["🛤️ API Routes"]
-        SQLite["🗄️ SQLite Database<br/>Templates, Clients, Variables"]
+        Routes["🛤️ API Routes<br/>(REST Endpoints)"]
+        Controllers["🎮 Controller<br/>(Logica di Business)"]
+        Models["📊 Sequelize Models<br/>(ORM)"]
+        SQLite["🗄️ SQLite DB<br/>(Template, Clienti, Variabili)"]
     end
 
-    subgraph "Docker Services"
-        DockerFE["🐳 Frontend Container<br/>Nginx + React Build"]
-        DockerBE["🐳 Backend Container<br/>Node.js + Express"]
-        Volume["📦 Docker Volume<br/>Database Persistence"]
+    %% --- INFRA ---
+    subgraph "🐳 Docker"
+        direction TB
+        DockerFE["Frontend Container<br/>Nginx + React Build"]
+        DockerBE["Backend Container<br/>Node.js + Express"]
+        Volume["📦 Volume<br/>Persistenza Database"]
     end
 
-    subgraph "Generated Output"
-        EnvFiles["📄 .env Files"]
-        ZipExport["📦 ZIP Packages"]
+    %% --- OUTPUT ---
+    subgraph "📤 Output Generato"
+        direction TB
+        EnvFiles["📄 File .env"]
+        ZipExport["📦 Pacchetti ZIP"]
     end
 
-    User --> React
+    %% --- FLOWS ---
+    User -->|"Interazione UI"| React
     React --> Pages
-    React --> Components
+    Pages --> Components
     Pages --> Services
-    Services -.->|"HTTP POST"| Express
+    Services -.->|"HTTP (REST)"| Express
 
-    Express --> Controllers
+    Express --> Routes
+    Routes --> Controllers
     Controllers --> Models
-    Controllers --> Routes
     Models --> SQLite
 
-    Controllers --> EnvFiles
-    Controllers --> ZipExport
+    Controllers -->|"Generazione"| EnvFiles
+    Controllers -->|"Esportazione"| ZipExport
 
+    %% --- DOCKER CONNECTIONS ---
     DockerFE --> React
     DockerBE --> Express
     DockerBE --> Volume
     Volume --> SQLite
 
+    %% --- STYLES ---
     classDef frontend fill:#61dafb,stroke:#333,stroke-width:2px,color:#000
     classDef backend fill:#68a063,stroke:#333,stroke-width:2px,color:#fff
     classDef database fill:#003b57,stroke:#333,stroke-width:2px,color:#fff
