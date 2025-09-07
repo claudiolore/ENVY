@@ -374,22 +374,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-
-## 🙏 Acknowledgments
-
-- Built with [Node.js](https://nodejs.org/) and [Express](https://expressjs.com/)
-- Frontend powered by [React](https://reactjs.org/) and [Material-UI](https://mui.com/)
-- Database management with [Sequelize](https://sequelize.org/) and [SQLite](https://sqlite.org/)
-- Bundled with [Vite](https://vitejs.dev/) for optimal development experience
-
-## 📞 Support
-
-For questions, issues, or contributions, please:
-
-1. Check existing [GitHub Issues](../../issues)
-2. Create a new issue with detailed information
-3. Join our community discussions
-
 ---
 
 Made with ❤️ for developers who value clean environment management.
