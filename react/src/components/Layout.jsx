@@ -16,6 +16,7 @@ import {
   Paper,
 } from "@mui/material";
 import {
+  Home as HomeIcon,
   Description as TemplateIcon,
   People as ClientIcon,
   Settings as VariableIcon,
@@ -33,6 +34,7 @@ const Layout = ({ children }) => {
 
   // Mapping delle routes per i tabs
   const routes = [
+    { path: "/", label: t("nav.home"), icon: <HomeIcon /> },
     { path: "/analyze", label: t("nav.analyze"), icon: <AnalyzeIcon /> },
     { path: "/templates", label: t("nav.templates"), icon: <TemplateIcon /> },
     { path: "/clients", label: t("nav.clients"), icon: <ClientIcon /> },
@@ -42,9 +44,7 @@ const Layout = ({ children }) => {
 
   // Trova il tab attivo basato sulla route corrente
   const currentTab = routes.findIndex(
-    (route) =>
-      location.pathname === route.path ||
-      (location.pathname === "/" && route.path === "/analyze")
+    (route) => location.pathname === route.path
   );
 
   const handleTabChange = (event, newValue) => {

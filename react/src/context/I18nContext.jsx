@@ -11,6 +11,7 @@ const translations = {
     // Layout e Navigation
     "app.title": "ENVY - Environment Manager",
     "app.subtitle": "Tool interno per gestione template .env",
+    "nav.home": "Home",
     "nav.generate": "Genera",
     "nav.templates": "Template",
     "nav.clients": "Clienti",
@@ -179,6 +180,48 @@ const translations = {
     "templates.importMultiple.createError":
       "Errore nella creazione del template",
 
+    // Pagina Home
+    "home.welcome": "Benvenuto in ENVY",
+    "home.subtitle": "Environment Variable Yielder",
+    "home.description":
+      "Un sistema moderno per la gestione di template per file .env, che ti aiuta a organizzare e generare configurazioni personalizzate per diversi clienti e ambienti.",
+    "home.features": "Funzionalità Principali",
+    "home.feature.templates.title": "Gestione Template",
+    "home.feature.templates.desc":
+      "Crea template riutilizzabili con variabili tipizzate per le tue configurazioni .env",
+    "home.feature.clients.title": "Organizzazione Clienti",
+    "home.feature.clients.desc":
+      "Gestisci diversi clienti e ambienti con le loro configurazioni specifiche",
+    "home.feature.generation.title": "Generazione Automatica",
+    "home.feature.generation.desc":
+      "Genera file .env personalizzati combinando template con valori specifici per cliente",
+    "home.feature.export.title": "Esportazione",
+    "home.feature.export.desc":
+      "Scarica configurazioni come archivi ZIP o file .env individuali",
+    "home.feature.analysis.title": "Analisi Avanzata",
+    "home.feature.analysis.desc":
+      "Analizza e importa file .env esistenti per creare template automaticamente",
+    "home.feature.ui.title": "Interfaccia Moderna",
+    "home.feature.ui.desc":
+      "Interfaccia pulita e intuitiva costruita con Material-UI",
+    "home.quickStart": "Inizia Subito",
+    "home.quickStart.desc": "Scegli come iniziare con ENVY:",
+    "home.quickStart.analyze": "Importa file .env esistenti",
+    "home.quickStart.templates": "Crea un nuovo template",
+    "home.quickStart.clients": "Configura un cliente",
+    "home.architecture": "Architettura Sistema",
+    "home.architecture.desc":
+      "ENVY è una applicazione full-stack con backend Node.js/Express e frontend React moderno.",
+    "home.tech": "Tecnologie",
+    "home.tech.frontend": "Frontend: React + Material-UI + Vite",
+    "home.tech.backend": "Backend: Node.js + Express + Sequelize",
+    "home.tech.db": "Database: SQLite per persistenza locale",
+    "home.tech.docker": "Containerizzazione: Docker + Docker Compose",
+    "home.callToAction":
+      "Inizia a gestire i tuoi file .env in modo professionale",
+    "home.startNow": "Inizia Ora",
+    "home.explore": "Esplora →",
+
     // Pagina Analyze
     "analyze.title": "Analizza File .env",
     "analyze.description":
@@ -276,6 +319,7 @@ const translations = {
     // Layout e Navigation
     "app.title": "ENVY - Environment Manager",
     "app.subtitle": "Internal tool for .env template management",
+    "nav.home": "Home",
     "nav.generate": "Generate",
     "nav.templates": "Templates",
     "nav.clients": "Clients",
@@ -441,7 +485,47 @@ const translations = {
       'Template "{{templateName}}" created successfully! {{clientsCount}} clients and {{variablesCount}} variables created.',
     "templates.importMultiple.createError": "Error creating template",
 
-    // Pagina Analyze
+    // Home Page
+    "home.welcome": "Welcome to ENVY",
+    "home.subtitle": "Environment Variable Yielder",
+    "home.description":
+      "A modern system for managing .env file templates, helping you organize and generate custom configurations for different clients and environments.",
+    "home.features": "Key Features",
+    "home.feature.templates.title": "Template Management",
+    "home.feature.templates.desc":
+      "Create reusable templates with typed variables for your .env configurations",
+    "home.feature.clients.title": "Client Organization",
+    "home.feature.clients.desc":
+      "Manage different clients and environments with their specific configurations",
+    "home.feature.generation.title": "Automatic Generation",
+    "home.feature.generation.desc":
+      "Generate custom .env files by combining templates with client-specific values",
+    "home.feature.export.title": "Export Functionality",
+    "home.feature.export.desc":
+      "Download configurations as ZIP archives or individual .env files",
+    "home.feature.analysis.title": "Advanced Analysis",
+    "home.feature.analysis.desc":
+      "Analyze and import existing .env files to create templates automatically",
+    "home.feature.ui.title": "Modern Interface",
+    "home.feature.ui.desc": "Clean, intuitive interface built with Material-UI",
+    "home.quickStart": "Quick Start",
+    "home.quickStart.desc": "Choose how to get started with ENVY:",
+    "home.quickStart.analyze": "Import existing .env files",
+    "home.quickStart.templates": "Create a new template",
+    "home.quickStart.clients": "Configure a client",
+    "home.architecture": "System Architecture",
+    "home.architecture.desc":
+      "ENVY is a full-stack application with Node.js/Express backend and modern React frontend.",
+    "home.tech": "Technologies",
+    "home.tech.frontend": "Frontend: React + Material-UI + Vite",
+    "home.tech.backend": "Backend: Node.js + Express + Sequelize",
+    "home.tech.db": "Database: SQLite for local persistence",
+    "home.tech.docker": "Containerization: Docker + Docker Compose",
+    "home.callToAction": "Start managing your .env files professionally",
+    "home.startNow": "Start Now",
+    "home.explore": "Explore →",
+
+    // Analyze Page
     "analyze.title": "Analyze .env Files",
     "analyze.description":
       "Load multiple existing .env files to automatically create templates and clients. The analysis will detect common, client-specific, and partial variables to help you structure your template.",
